@@ -14,3 +14,7 @@ $ python setup.py install
 ```
 $ python main.py
 ```
+
+# Credits:
+- [ENet](https://github.com/lsalzman/enet): ENet reliable UDP networking library
+- [PyEnet](https://github.com/aresch/pyenet): An ENet Python3 Wrapper
