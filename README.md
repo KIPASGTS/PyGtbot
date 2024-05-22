@@ -1,7 +1,10 @@
-## Setup
-```bash
-apt install python3 -y
-apt install python3-pip -y
-pip install cython
-python3 setup.py install
+## Installation
+This version of pygtbot requires enet 1.3.
+Next step is to run the setup.py build:
+```
+$ python setup.py build
+```
+Once that is complete, install the new pyenet module:
+```
+$ python setup.py install
 ```
