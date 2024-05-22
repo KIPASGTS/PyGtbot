@@ -15,6 +15,8 @@ class Bot:
         self.User = ['user', 'pw']
         self.GuestName = guestName
         self.netid = '0'
+        self.currentWorld = ""
+        self.usingNewPacket = False
 
     def set_user(self, username: str, password: str):
         self.User[0] = username
@@ -22,6 +24,9 @@ class Bot:
 
     def set_guest(self, username: str):
         self.GuestName = username
+
+    def set_using_new_packet(self, value: bool):
+        self.usingNewPacket = value
 
     def get_nick(self):
         if self.User[0] != 'user': return self.User[0]
@@ -31,7 +36,7 @@ class Bot:
         self.host = enet.Host(None, 1, 2, 0, 0)
         self.host.checksum = enet.ENET_CRC32
         self.host.compress_with_range_coder()
-        self.host.usingNewPacket = True
+        self.host.usingNewPacket = self.usingNewPacket
         self.peer = self.host.connect(enet.Address(self.targetHost.encode(), self.targetPort), 1)
 
     def detach(self):
@@ -57,14 +62,14 @@ class Bot:
             pass
         elif netMessage == 2 or netMessage == 3:
             msg = GetTextMessageFromPacket(packet.data)
-            print(f"[{self.get_nick()}][{netMessage}] Receive packet text: {msg.replace('\n', '\\n')}")
+            replaced = msg.replace('\n', '\\n')
+            print(f"[{self.get_nick()}][{netMessage}] Receive packet text: {replaced}")
             pass
         elif netMessage == 4:
             tank = GetTankPacketFromPacket(packet.data[4:])
             if tank.PacketType == 1:
                 variant = Variant()
                 variant.unpack(packet)
-
                 func_name = variant.get_string(0)
                 if func_name == "OnSuperMainStartAcceptLogonHrdxs47254722215a":
                     SendPacket(peer, 2, "action|enter_game\n")
@@ -76,13 +81,11 @@ class Bot:
                         self.netid = re.findall(r'netID\|(.*?)\n', func_content)[0]
                 else:
                     print(str(variant.VariantData))
-            elif tank.PacketType == 0:
-                SendTankPacket(peer, tank)
-                SendTankPacket(peer, tank)
-                SendTankPacket(peer, tank)
-                SendTankPacket(peer, tank)
-                SendTankPacket(peer, tank)
-                SendTankPacket(peer, tank)
+            elif tank.PacketType == 4:
+                nameLen = packet.data[66]
+                self.currentWorld = packet.data[68 : 68 + nameLen]
+                print(f"World Name Len: {nameLen}, World Name: {self.currentWorld}")
+
             elif tank.PacketType == 16:
                 data = packet.data[60:]
                 item_data = open('items.dat', 'wb')
@@ -97,13 +100,9 @@ class Bot:
 def main():
     bot = Bot("46.250.226.217", 17092, "BurpSiregar") #Example Target
     bot.set_user("DidYouKnowKKK", "mangeak23#")
+    bot.set_using_new_packet(True)
     bot.connect()
 
     while True:
         bot.detach()
 main()
-
-        
-        
-
-    
