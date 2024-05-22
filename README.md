@@ -1,5 +1,5 @@
 ## Installation
-This version of pygtbot requires enet 1.3.
+This version of pygtbot requires python 3.13 or higher.
 Next step is to run the setup.py build:
 ```
 $ python setup.py build
