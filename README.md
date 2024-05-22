@@ -4,7 +4,13 @@ Next step is to run the setup.py build:
 ```
 $ python setup.py build
 ```
-Once that is complete, install the new pyenet module:
+Once that is complete, install the new module:
 ```
 $ python setup.py install
+```
+
+
+# Run Bot
+```
+$ python main.py
 ```
